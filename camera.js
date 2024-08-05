@@ -4,7 +4,7 @@ async function initCamera() {
             video: {
                 width: 1280,
                 height: 720,
-                facingMode: 'environment'
+                facingMode: { exact: 'environment' } // Request back-facing camera
             }
         };
 
