@@ -27,26 +27,26 @@ async function initCamera() {
 
             document.getElementById('captureButton').addEventListener('click', async () => {
                 try {
-                    if (capabilities.torch) {
-                        // Enable the torch
-                        await track.applyConstraints({
-                            advanced: [{ torch: true }]
-                        });
-                    } else {
-                        console.warn("Torch is not supported, attempting capture without torch");
-                    }
+                    // if (capabilities.torch) {
+                    //     // Enable the torch
+                    //     await track.applyConstraints({
+                    //         advanced: [{ torch: true }]
+                    //     });
+                    // } else {
+                    //     console.warn("Torch is not supported, attempting capture without torch");
+                    // }
                     
                     const photo = await imageCapture.takePhoto({fillLightMode:'flash'});
                     const img = document.getElementById('capturedImage');
                     img.src = URL.createObjectURL(photo);
                     img.style.display = 'block';
 
-                    // Turn off the torch after capturing the photo
-                    if (capabilities.torch) {
-                        await track.applyConstraints({
-                            advanced: [{ torch: false }]
-                        });
-                    }
+                    // // Turn off the torch after capturing the photo
+                    // if (capabilities.torch) {
+                    //     await track.applyConstraints({
+                    //         advanced: [{ torch: false }]
+                    //     });
+                    // }
                 } catch (error) {
                     console.error('Error capturing photo:', error);
                     alert('Error capturing photo: ' + error.message);
