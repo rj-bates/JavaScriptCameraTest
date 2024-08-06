@@ -35,8 +35,8 @@ async function initCamera() {
                     } else {
                         console.warn("Torch is not supported, attempting capture without torch");
                     }
-
-                    const photo = await imageCapture.takePhoto();
+                    
+                    const photo = await imageCapture.takePhoto({fillLightMode:'On'});
                     const img = document.getElementById('capturedImage');
                     img.src = URL.createObjectURL(photo);
                     img.style.display = 'block';
