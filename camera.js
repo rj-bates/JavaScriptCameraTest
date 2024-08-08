@@ -62,6 +62,32 @@ async function initCamera() {
                 }
             });
         }
+
+        // Add the event listener for native camera capture
+        document.getElementById('nativeCaptureButton').addEventListener('click', async () => {
+            try {
+                const response = await fetch('http://localhost:5165/flashcontrol.FlashControl/TakePhotoWithNativeCamera', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const result = await response.json();
+                if (result.filePath) {
+                    const nativePhoto = document.getElementById('nativePhoto');
+                    nativePhoto.src = `file:///${result.filePath.replace(/\\/g, '/')}`;
+                    nativePhoto.style.display = 'block';
+                } else {
+                    alert('Error capturing photo with native camera: ' + result.errorMsg);
+                }
+            } catch (error) {
+                console.error('Error calling gRPC service:', error);
+                alert('Error calling gRPC service: ' + error.message);
+            }
+        });
+
     } catch (error) {
         console.error('Error accessing camera:', error);
         alert('Error accessing camera: ' + error.message + '. Please ensure you have granted camera permissions.');

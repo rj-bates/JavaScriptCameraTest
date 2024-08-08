@@ -13,6 +13,11 @@
         }
         #capturedImage {
             margin-top: 20px;
+            display: none;
+        }
+        #nativePhoto {
+            margin-top: 20px;
+            display: none;
         }
     </style>
 </head>
@@ -20,8 +25,10 @@
     <h1>Camera Flash Test</h1>
     <video id="video" autoplay playsinline></video>
     <button id="captureButton">Capture Photo with Flash</button>
+    <button id="nativeCaptureButton">Capture Photo with Native Camera</button>
     <div id="capabilities"></div>
-    <img id="capturedImage" alt="Captured Image" style="display:none;"/>
+    <img id="capturedImage" alt="Captured Image"/>
+    <img id="nativePhoto" alt="Photo Taken with Native Camera"/>
     <script src="camera.js"></script>
 </body>
 </html>
