@@ -66,7 +66,7 @@ async function initCamera() {
         // Add the event listener for native camera capture
         document.getElementById('nativeCaptureButton').addEventListener('click', async () => {
             try {
-                const response = await fetch('http://localhost:5165/flashcontrol.FlashControl/TakePhotoWithNativeCamera', {
+                const response = await fetch('https://localhost:5165/flashcontrol.FlashControl/TakePhotoWithNativeCamera', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/grpc-web+json',
