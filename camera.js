@@ -19,34 +19,23 @@ async function initCamera() {
         if (window.ImageCapture) {
             const imageCapture = new ImageCapture(track);
 
-            // Check for torch support
+            // Check for torch support and get photo capabilities
             const capabilities = track.getCapabilities();
+            const photoCapabilities = await imageCapture.getPhotoCapabilities();
+
             capabilitiesDiv.innerHTML = `<strong>Camera Capabilities:</strong><br>
                 Torch Supported: ${capabilities.torch ? 'Yes' : 'No'}<br>
-                Other Capabilities: ${JSON.stringify(capabilities, null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')}`;
+                <strong>Photo Capabilities:</strong><br>
+                ${formatPhotoCapabilities(photoCapabilities)}
+                <strong>Other Capabilities:</strong><br>
+                ${JSON.stringify(capabilities, null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;')}`;
 
             document.getElementById('captureButton').addEventListener('click', async () => {
                 try {
-                    // if (capabilities.torch) {
-                    //     // Enable the torch
-                    //     await track.applyConstraints({
-                    //         advanced: [{ torch: true }]
-                    //     });
-                    // } else {
-                    //     console.warn("Torch is not supported, attempting capture without torch");
-                    // }
-                    
-                    const photo = await imageCapture.takePhoto({fillLightMode:'auto'});
+                    const photo = await imageCapture.takePhoto({fillLightMode: 'auto'});
                     const img = document.getElementById('capturedImage');
                     img.src = URL.createObjectURL(photo);
                     img.style.display = 'block';
-
-                    // // Turn off the torch after capturing the photo
-                    // if (capabilities.torch) {
-                    //     await track.applyConstraints({
-                    //         advanced: [{ torch: false }]
-                    //     });
-                    // }
                 } catch (error) {
                     console.error('Error capturing photo:', error);
                     alert('Error capturing photo: ' + error.message);
@@ -77,6 +66,22 @@ async function initCamera() {
         console.error('Error accessing camera:', error);
         alert('Error accessing camera: ' + error.message + '. Please ensure you have granted camera permissions.');
     }
+}
+
+function formatPhotoCapabilities(capabilities) {
+    let result = '';
+    for (const [key, value] of Object.entries(capabilities)) {
+        if (value !== null && typeof value === 'object') {
+            if ('min' in value && 'max' in value && 'step' in value) {
+                result += `${key}: min ${value.min}, max ${value.max}, step ${value.step}<br>`;
+            } else {
+                result += `${key}: ${JSON.stringify(value)}<br>`;
+            }
+        } else {
+            result += `${key}: ${value}<br>`;
+        }
+    }
+    return result;
 }
 
 window.onload = initCamera;
