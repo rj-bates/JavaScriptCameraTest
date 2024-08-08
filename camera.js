@@ -69,11 +69,16 @@ async function initCamera() {
                 const response = await fetch('http://localhost:5165/flashcontrol.FlashControl/TakePhotoWithNativeCamera', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/grpc-web+json',
+                        'Accept': 'application/grpc-web+json'
                     },
                     body: JSON.stringify({})
                 });
-                
+        
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
+                }
+        
                 const result = await response.json();
                 if (result.filePath) {
                     const nativePhoto = document.getElementById('nativePhoto');
