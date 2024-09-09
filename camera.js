@@ -1,5 +1,7 @@
-import { FlashControlClient } from './flashControl_pb_service.js';
-import { Empty } from 'google-protobuf/google/protobuf/empty_pb.js';
+// Import statements for gRPC-Web client and Empty message
+// Note: Replace YOUR_USERNAME and YOUR_REPO with actual values
+import { FlashControlClient } from 'https://cdn.jsdelivr.net/gh/rj-bates/rj-bates.github.io@main/flashControl_pb_service.js';
+import { Empty } from 'https://cdn.jsdelivr.net/npm/google-protobuf@3.14.0/google/protobuf/empty_pb.js';
 
 async function initCamera() {
     try {
@@ -19,7 +21,7 @@ async function initCamera() {
         const track = stream.getVideoTracks()[0];
         const capabilitiesDiv = document.getElementById('capabilities');
 
-        if (window.ImageCapture) {
+        if ('ImageCapture' in window) {
             const imageCapture = new ImageCapture(track);
 
             // Check for torch support and get photo capabilities
@@ -112,4 +114,5 @@ function formatPhotoCapabilities(capabilities) {
     return result;
 }
 
-window.onload = initCamera;
+// Call initCamera when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', initCamera);

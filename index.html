@@ -5,30 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camera Flash Test</title>
     <style>
-        #capabilities {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
+        #video, #capturedImage, #nativePhoto {
+            max-width: 100%;
+            height: auto;
         }
-        #capturedImage {
-            margin-top: 20px;
-            display: none;
-        }
-        #nativePhoto {
-            margin-top: 20px;
+        #capturedImage, #nativePhoto {
             display: none;
         }
     </style>
 </head>
 <body>
     <h1>Camera Flash Test</h1>
+
     <video id="video" autoplay playsinline></video>
-    <button id="captureButton">Capture Photo with Flash</button>
-    <button id="nativeCaptureButton">Capture Photo with Native Camera</button>
+    <img id="capturedImage" alt="Captured photo">
+    <img id="nativePhoto" alt="Native camera photo">
+
+    <div>
+        <button id="captureButton">Capture Photo with Flash</button>
+        <button id="nativeCaptureButton">Capture Photo with Native Camera</button>
+    </div>
+
     <div id="capabilities"></div>
-    <img id="capturedImage" alt="Captured Image"/>
-    <img id="nativePhoto" alt="Photo Taken with Native Camera"/>
-    <script src="camera.js"></script>
+
+    <script type="module" src="camera.js"></script>
 </body>
 </html>
