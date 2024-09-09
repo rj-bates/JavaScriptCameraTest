@@ -1,7 +1,4 @@
-// Import statements for gRPC-Web client and Empty message
-// Note: Replace YOUR_USERNAME and YOUR_REPO with actual values
-import { FlashControlClient } from 'https://cdn.jsdelivr.net/gh/rj-bates/rj-bates.github.io@main/flashControl_pb_service.js';
-import 'https://cdn.jsdelivr.net/npm/google-protobuf@3.14.0/google/protobuf/empty_pb.js';
+// The FlashControlClient and Empty message are now globally available
 
 async function initCamera() {
     try {
@@ -69,7 +66,7 @@ async function initCamera() {
         }
 
         // Initialize gRPC-Web client
-        const client = new FlashControlClient('https://localhost:5165');
+        const client = new proto.flashcontrol.FlashControlClient('https://localhost:5165');
 
         // Add the event listener for native camera capture using gRPC-Web
         document.getElementById('nativeCaptureButton').addEventListener('click', () => {
