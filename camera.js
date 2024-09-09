@@ -1,7 +1,7 @@
 // Import statements for gRPC-Web client and Empty message
 // Note: Replace YOUR_USERNAME and YOUR_REPO with actual values
 import { FlashControlClient } from 'https://cdn.jsdelivr.net/gh/rj-bates/rj-bates.github.io@main/flashControl_pb_service.js';
-import { Empty } from 'https://cdn.jsdelivr.net/npm/google-protobuf@3.14.0/google/protobuf/empty_pb.js';
+import 'https://cdn.jsdelivr.net/npm/google-protobuf@3.14.0/google/protobuf/empty_pb.js';
 
 async function initCamera() {
     try {
@@ -73,7 +73,9 @@ async function initCamera() {
 
         // Add the event listener for native camera capture using gRPC-Web
         document.getElementById('nativeCaptureButton').addEventListener('click', () => {
-            const request = new Empty();
+            // Create an Empty message
+            const request = new proto.google.protobuf.Empty();
+            
             client.takePhotoWithNativeCamera(request, {}, (err, response) => {
                 if (err) {
                     console.error('Error calling gRPC service:', err);
