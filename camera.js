@@ -1,5 +1,3 @@
-// The FlashControlClient and Empty message are now globally available
-
 async function initCamera() {
     try {
         const constraints = {
@@ -66,12 +64,12 @@ async function initCamera() {
         }
 
         // Initialize gRPC-Web client
-        const client = new proto.flashcontrol.FlashControlClient('https://localhost:5165');
+        const client = new flashcontrol.FlashControl('https://localhost:5165', null, null);
 
         // Add the event listener for native camera capture using gRPC-Web
         document.getElementById('nativeCaptureButton').addEventListener('click', () => {
             // Create an Empty message
-            const request = new proto.google.protobuf.Empty();
+            const request = new google.protobuf.Empty();
             
             client.takePhotoWithNativeCamera(request, {}, (err, response) => {
                 if (err) {
