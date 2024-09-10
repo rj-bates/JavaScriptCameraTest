@@ -3,12 +3,13 @@ syntax = "proto3";
 option csharp_namespace = "FlashControlGrpcService";
 
 package flashcontrol;
-import "google/protobuf/empty.proto";
 
 service FlashControl {
   rpc TakePhoto (PhotoRequest) returns (PhotoResponse);
-  rpc TakePhotoWithNativeCamera (google.protobuf.Empty) returns (PhotoPathResponse);
+  rpc TakePhotoWithNativeCamera (EmptyRequest) returns (PhotoPathResponse);
 }
+
+message EmptyRequest {}
 
 message PhotoPathResponse {
     string file_path = 1;

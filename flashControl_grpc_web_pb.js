@@ -19,8 +19,6 @@
 const grpc = {};
 grpc.web = require('grpc-web');
 
-
-var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js')
 const proto = {};
 proto.flashcontrol = require('./flashControl_pb.js');
 
@@ -140,16 +138,16 @@ proto.flashcontrol.FlashControlPromiseClient.prototype.takePhoto =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.google.protobuf.Empty,
+ *   !proto.flashcontrol.EmptyRequest,
  *   !proto.flashcontrol.PhotoPathResponse>}
  */
 const methodDescriptor_FlashControl_TakePhotoWithNativeCamera = new grpc.web.MethodDescriptor(
   '/flashcontrol.FlashControl/TakePhotoWithNativeCamera',
   grpc.web.MethodType.UNARY,
-  google_protobuf_empty_pb.Empty,
+  proto.flashcontrol.EmptyRequest,
   proto.flashcontrol.PhotoPathResponse,
   /**
-   * @param {!proto.google.protobuf.Empty} request
+   * @param {!proto.flashcontrol.EmptyRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
@@ -160,7 +158,7 @@ const methodDescriptor_FlashControl_TakePhotoWithNativeCamera = new grpc.web.Met
 
 
 /**
- * @param {!proto.google.protobuf.Empty} request The
+ * @param {!proto.flashcontrol.EmptyRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
@@ -181,7 +179,7 @@ proto.flashcontrol.FlashControlClient.prototype.takePhotoWithNativeCamera =
 
 
 /**
- * @param {!proto.google.protobuf.Empty} request The
+ * @param {!proto.flashcontrol.EmptyRequest} request The
  *     request proto
  * @param {?Object<string, string>=} metadata User defined
  *     call metadata
