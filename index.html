@@ -32,10 +32,17 @@
         // Create a global object to hold our modules
         window.PROTO_BUNDLE = {};
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/google-protobuf@3.14.0/google-protobuf.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/grpc-web@1.2.1/dist/grpc-web-client.js"></script>
+    <!-- Load protobuf.js -->
+    <script src="https://cdn.jsdelivr.net/npm/protobufjs@6.11.3/dist/protobuf.min.js"></script>
+    
+    <!-- Load gRPC-Web -->
+    <script src="https://cdn.jsdelivr.net/npm/grpc-web@1.4.2/dist/grpc-web-client.js"></script>
+
+    <!-- Load our generated protobuf files -->
     <script src="flashControl_pb.js"></script>
     <script src="flashControl_pb_service.js"></script>
+
+    <!-- Load our main script -->
     <script src="camera.js"></script>
 </body>
 </html>
