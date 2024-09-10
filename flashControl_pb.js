@@ -730,10 +730,10 @@ proto.flashcontrol.PhotoResponse.serializeBinaryToWriter = function(message, wri
 
 /**
  * optional bytes image_data = 1;
- * @return {string}
+ * @return {!(string|Uint8Array)}
  */
 proto.flashcontrol.PhotoResponse.prototype.getImageData = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 

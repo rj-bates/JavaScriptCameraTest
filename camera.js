@@ -64,12 +64,12 @@ async function initCamera() {
         }
 
         // Initialize gRPC-Web client
-        const client = new proto.flashcontrol.FlashControlClient('https://localhost:5165', null, null);
+        const client = new FlashControl.FlashControlClient('https://localhost:5165', null, null);
 
         // Add the event listener for native camera capture using gRPC-Web
         document.getElementById('nativeCaptureButton').addEventListener('click', () => {
             // Create an Empty message
-            const request = new proto.flashcontrol.EmptyRequest();
+            const request = new FlashControl.EmptyRequest();
             
             client.takePhotoWithNativeCamera(request, {}, (err, response) => {
                 if (err) {
