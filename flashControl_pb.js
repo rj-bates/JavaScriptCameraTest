@@ -11,7 +11,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-var jspb = require('google-protobuf');
+var jspb = window.jspb;
 var goog = jspb;
 var global =
     (typeof globalThis !== 'undefined' && globalThis) ||
@@ -21,7 +21,7 @@ var global =
     (function () { return this; }).call(null) ||
     Function('return this')();
 
-var google_protobuf_empty_pb = require('google-protobuf/google/protobuf/empty_pb.js');
+var google_protobuf_empty_pb = google.protobuf.Empty; // Assuming it's already loaded from protobuf.js CDN
 goog.object.extend(proto, google_protobuf_empty_pb);
 goog.exportSymbol('proto.flashcontrol.CameraType', null, global);
 goog.exportSymbol('proto.flashcontrol.FlashMode', null, global);
