@@ -28,13 +28,14 @@
 
     <div id="capabilities"></div>
 
-    <!-- Load the required libraries -->
+    <script>
+        // Create a global object to hold our modules
+        window.PROTO_BUNDLE = {};
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/google-protobuf@3.14.0/google-protobuf.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/grpc-web@1.2.1/dist/grpc-web-client.js"></script>
     <script src="flashControl_pb.js"></script>
     <script src="flashControl_pb_service.js"></script>
-
-    <!-- Load our main script -->
     <script src="camera.js"></script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 // package: flashcontrol
 // file: flashControl.proto
+(function(){
+  var exports = {};
 
 var flashControl_pb = require("./flashControl_pb");
 var google_protobuf_empty_pb = require("google-protobuf/google/protobuf/empty_pb");
@@ -100,3 +102,5 @@ FlashControlClient.prototype.takePhotoWithNativeCamera = function takePhotoWithN
 
 exports.FlashControlClient = FlashControlClient;
 
+window.PROTO_BUNDLE.flashControl_pb_service = exports;
+})();
