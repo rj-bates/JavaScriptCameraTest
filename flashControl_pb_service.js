@@ -1,11 +1,9 @@
 // package: flashcontrol
 // file: flashControl.proto
-(function(){
-  var exports = {};
 
-var flashControl_pb = PROTO_BUNDLE.flashControl_pb;
-var google_protobuf_empty_pb = google.protobuf.Empty; // Assuming it's already loaded from protobuf.js CDN
-var grpc = window.grpc;
+var flashControl_pb = require("./flashControl_pb");
+var google_protobuf_empty_pb = require("google-protobuf/google/protobuf/empty_pb");
+var grpc = require("@improbable-eng/grpc-web").grpc;
 
 var FlashControl = (function () {
   function FlashControl() {}
@@ -102,5 +100,3 @@ FlashControlClient.prototype.takePhotoWithNativeCamera = function takePhotoWithN
 
 exports.FlashControlClient = FlashControlClient;
 
-window.PROTO_BUNDLE.flashControl_pb_service = exports;
-})();

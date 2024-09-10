@@ -1,10 +1,3 @@
-// We'll load our proto definition here
-let protoRoot;
-protobuf.load("flashControl.proto", function(err, root) {
-    if (err) throw err;
-    protoRoot = root;
-});
-
 async function initCamera() {
     try {
         const constraints = {
@@ -71,37 +64,29 @@ async function initCamera() {
         }
 
         // Initialize gRPC-Web client
-        const FlashControl = protoRoot.lookupService("flashcontrol.FlashControl");
-        const client = new grpc.web.GrpcWebClientBase({'format': 'text'});
+        const client = new proto.flashcontrol.FlashControlClient('https://localhost:5165', null, null);
 
         // Add the event listener for native camera capture using gRPC-Web
         document.getElementById('nativeCaptureButton').addEventListener('click', () => {
             // Create an Empty message
-            const Empty = protoRoot.lookupType("google.protobuf.Empty");
-            const request = Empty.create();
+            const request = new proto.google.protobuf.Empty();
             
-            client.rpcCall(
-                '/flashcontrol.FlashControl/TakePhotoWithNativeCamera',
-                request,
-                {},
-                FlashControl.methods.TakePhotoWithNativeCamera.responseType,
-                (err, response) => {
-                    if (err) {
-                        console.error('Error calling gRPC service:', err);
-                        alert('Error calling gRPC service: ' + err.message);
-                        return;
-                    }
-                    const filePath = response.getFilePath();
-                    const errorMsg = response.getErrorMsg();
-                    if (filePath) {
-                        const nativePhoto = document.getElementById('nativePhoto');
-                        nativePhoto.src = `file:///${filePath.replace(/\\/g, '/')}`;
-                        nativePhoto.style.display = 'block';
-                    } else {
-                        alert('Error capturing photo with native camera: ' + (errorMsg || 'Unknown error'));
-                    }
+            client.takePhotoWithNativeCamera(request, {}, (err, response) => {
+                if (err) {
+                    console.error('Error calling gRPC service:', err);
+                    alert('Error calling gRPC service: ' + err.message);
+                    return;
                 }
-            );
+                const filePath = response.getFilePath();
+                const errorMsg = response.getErrorMsg();
+                if (filePath) {
+                    const nativePhoto = document.getElementById('nativePhoto');
+                    nativePhoto.src = `file:///${filePath.replace(/\\/g, '/')}`;
+                    nativePhoto.style.display = 'block';
+                } else {
+                    alert('Error capturing photo with native camera: ' + (errorMsg || 'Unknown error'));
+                }
+            });
         });
 
     } catch (error) {

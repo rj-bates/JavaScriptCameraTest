@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option csharp_namespace = "FlashControlGrpcService";
+
+package flashcontrol;
+import "google/protobuf/empty.proto";
+
+service FlashControl {
+  rpc TakePhoto (PhotoRequest) returns (PhotoResponse);
+  rpc TakePhotoWithNativeCamera (google.protobuf.Empty) returns (PhotoPathResponse);
+}
+
+message PhotoPathResponse {
+    string file_path = 1;
+    string error_msg = 2;
+}
+
+message PhotoRequest {
+  FlashMode flash_mode = 1;
+  CameraType camera_type = 2;
+  int32 image_width = 3;
+  int32 image_height = 4;
+}
+
+message PhotoResponse {
+  bytes image_data = 1;
+  string file_path = 2;
+  string image_format = 3;
+}
+
+enum FlashMode {
+  AUTO = 0;
+  ON = 1;
+  OFF = 2;
+}
+
+enum CameraType {
+  BACK = 0;
+  FRONT = 1;
+}
