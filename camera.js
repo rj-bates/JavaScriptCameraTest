@@ -64,35 +64,45 @@ async function initCamera() {
         }
 
         // Initialize gRPC-Web client
-        // Update this line to use the correct namespace
+        console.log('Available flashcontrol objects:', flashcontrol);
+        // Initialize gRPC-Web client
+        console.log('Initializing gRPC-Web client...');
         const client = new flashcontrol.FlashControl('https://localhost:5165', null, null);
+        console.log('gRPC-Web client initialized:', client);
 
         // Add the event listener for native camera capture using gRPC-Web
         document.getElementById('nativeCaptureButton').addEventListener('click', () => {
+            console.log('Native capture button clicked');
             // Create an Empty message
             const request = new flashcontrol.EmptyRequest();
+            console.log('Created EmptyRequest:', request);
             
+            console.log('Calling takePhotoWithNativeCamera...');
             client.takePhotoWithNativeCamera(request, {}, (err, response) => {
                 if (err) {
                     console.error('Error calling gRPC service:', err);
                     alert('Error calling gRPC service: ' + err.message);
                     return;
                 }
+                console.log('Received response from takePhotoWithNativeCamera:', response);
                 const filePath = response.getFilePath();
                 const errorMsg = response.getErrorMsg();
                 if (filePath) {
+                    console.log('File path received:', filePath);
                     const nativePhoto = document.getElementById('nativePhoto');
                     nativePhoto.src = `file:///${filePath.replace(/\\/g, '/')}`;
                     nativePhoto.style.display = 'block';
+                    console.log('Photo displayed');
                 } else {
+                    console.error('Error capturing photo:', errorMsg);
                     alert('Error capturing photo with native camera: ' + (errorMsg || 'Unknown error'));
                 }
             });
         });
 
     } catch (error) {
-        console.error('Error accessing camera:', error);
-        alert('Error accessing camera: ' + error.message + '. Please ensure you have granted camera permissions.');
+        console.error('Error in initCamera:', error);
+        alert('Error initializing camera: ' + error.message);
     }
 }
 
@@ -113,4 +123,7 @@ function formatPhotoCapabilities(capabilities) {
 }
 
 // Call initCamera when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', initCamera);
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded. Calling initCamera...');
+    initCamera();
+});
