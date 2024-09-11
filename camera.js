@@ -1,4 +1,21 @@
-const flashcontrol = window.flashcontrol;
+// Wait for flashcontrol to be available
+function waitForFlashControl(callback, maxAttempts = 10, interval = 100) {
+    let attempts = 0;
+    const check = () => {
+        attempts++;
+        if (window.flashcontrol) {
+            console.log('flashcontrol found after', attempts, 'attempts');
+            callback(window.flashcontrol);
+        } else if (attempts < maxAttempts) {
+            console.log('Waiting for flashcontrol, attempt', attempts);
+            setTimeout(check, interval);
+        } else {
+            console.error('flashcontrol not found after', maxAttempts, 'attempts');
+            callback(null);
+        }
+    };
+    check();
+}
 
 async function initCamera() {
     try {
@@ -128,6 +145,13 @@ function formatPhotoCapabilities(capabilities) {
 
 // Call initCamera when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded. flashcontrol object:', flashcontrol);
-    initCamera();
+    console.log('DOM fully loaded. Waiting for flashcontrol...');
+    waitForFlashControl((flashcontrol) => {
+        if (flashcontrol) {
+            initCamera(flashcontrol);
+        } else {
+            console.error('Failed to initialize: flashcontrol not available');
+            alert('Failed to initialize: flashcontrol not available. Please check the console for more details.');
+        }
+    });
 });

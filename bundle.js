@@ -1138,3 +1138,8 @@
 
     return $root;
 });
+
+if (typeof window !== 'undefined') {
+    window.flashcontrol = $root.flashcontrol;
+}
+console.log('bundle.js: Exposed flashcontrol to window:', window.flashcontrol);

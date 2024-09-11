@@ -16,14 +16,11 @@
     <img id="nativePhoto" style="display: none; max-width: 100%;" alt="Native camera photo">
     <div id="capabilities"></div>
 
-    <!-- Load scripts in the correct order -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/google-protobuf/3.21.2/google-protobuf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/grpc-web/1.5.0/grpc-web.min.js"></script>
     <script src="bundle.js"></script>
     <script>
-        // Expose the flashcontrol object to the global scope
-        window.flashcontrol = flashcontrol;
-        console.log('bundle.js loaded. flashcontrol object:', window.flashcontrol);
+        console.log('After bundle.js: flashcontrol object:', window.flashcontrol);
     </script>
     <script src="camera.js"></script>
 </body>
