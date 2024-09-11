@@ -1,7 +1,6 @@
 
 async function initCamera() {
     try {
-        console.log('initCamera function called. flashcontrol object:', flashcontrol);
         
         const constraints = {
             video: {
@@ -96,6 +95,6 @@ function formatPhotoCapabilities(capabilities) {
 
 // Call initCamera when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded. Waiting for flashcontrol...');
-    initCamera(flashcontrol);
+    console.log('DOM fully loaded.');
+    initCamera();
 });
