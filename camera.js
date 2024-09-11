@@ -1,3 +1,4 @@
+
 async function initCamera() {
     try {
         console.log('initCamera function called. flashcontrol object:', flashcontrol);
@@ -65,41 +66,10 @@ async function initCamera() {
             });
         }
 
-        console.log('Attempting to initialize gRPC-Web client...');
-        if (typeof flashcontrol === 'undefined' || typeof flashcontrol.FlashControl === 'undefined') {
-            throw new Error('flashcontrol or FlashControl is not defined. Check if bundle.js is loaded correctly and exposes the necessary objects.');
-        }
-        const client = new flashcontrol.FlashControl('https://localhost:5165', null, null);
-        console.log('gRPC-Web client initialized:', client);
-
+       
         // Add the event listener for native camera capture using gRPC-Web
         document.getElementById('nativeCaptureButton').addEventListener('click', () => {
-            console.log('Native capture button clicked');
-            // Create an Empty message
-            const request = new flashcontrol.EmptyRequest();
-            console.log('Created EmptyRequest:', request);
-            
-            console.log('Calling takePhotoWithNativeCamera...');
-            client.takePhotoWithNativeCamera(request, {}, (err, response) => {
-                if (err) {
-                    console.error('Error calling gRPC service:', err);
-                    alert('Error calling gRPC service: ' + err.message);
-                    return;
-                }
-                console.log('Received response from takePhotoWithNativeCamera:', response);
-                const filePath = response.getFilePath();
-                const errorMsg = response.getErrorMsg();
-                if (filePath) {
-                    console.log('File path received:', filePath);
-                    const nativePhoto = document.getElementById('nativePhoto');
-                    nativePhoto.src = `file:///${filePath.replace(/\\/g, '/')}`;
-                    nativePhoto.style.display = 'block';
-                    console.log('Photo displayed');
-                } else {
-                    console.error('Error capturing photo:', errorMsg);
-                    alert('Error capturing photo with native camera: ' + (errorMsg || 'Unknown error'));
-                }
-            });
+            document.querySelector("#take-photo").click();
         });
 
     } catch (error) {
