@@ -4,6 +4,7 @@ const PhotoApp = () => {
   const [hasFlash, setHasFlash] = useState(false);
   const [flashOn, setFlashOn] = useState(false);
   const [error, setError] = useState('');
+  const [brightness, setBrightness] = useState(100);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -12,7 +13,10 @@ const PhotoApp = () => {
     async function setupCamera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: 'environment' } 
+          video: { 
+            facingMode: 'environment',
+            advanced: [{ torch: true }]  // Request torch capability
+          } 
         });
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -20,7 +24,17 @@ const PhotoApp = () => {
         
         const track = stream.getVideoTracks()[0];
         const capabilities = track.getCapabilities();
-        setHasFlash('torch' in capabilities);
+        const settings = track.getSettings();
+
+        // Check if torch is supported and currently available
+        setHasFlash('torch' in capabilities && 'torch' in settings);
+
+        // If ImageCapture API is available, use it for more accurate flash detection
+        if ('ImageCapture' in window) {
+          const imageCapture = new ImageCapture(track);
+          const photoCapabilities = await imageCapture.getPhotoCapabilities();
+          setHasFlash(photoCapabilities.fillLightMode.includes('flash'));
+        }
       } catch (err) {
         setError('Failed to access camera: ' + err.message);
       }
@@ -48,6 +62,7 @@ const PhotoApp = () => {
   const capturePhoto = () => {
     if (videoRef.current && canvasRef.current) {
       const context = canvasRef.current.getContext('2d');
+      context.filter = `brightness(${brightness}%)`;
       context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
       const imageDataUrl = canvasRef.current.toDataURL('image/jpeg');
       setCapturedImage(imageDataUrl);
@@ -81,7 +96,22 @@ const PhotoApp = () => {
       </div>
       
       {!hasFlash && (
-        <p className="text-yellow-600 mb-2">Note: Flash control is not available on this device.</p>
+        <div className="mb-4">
+          <p className="text-yellow-600 mb-2">Note: Flash control is not available on this device.</p>
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="brightness">
+            Brightness Adjustment:
+          </label>
+          <input
+            type="range"
+            id="brightness"
+            name="brightness"
+            min="0"
+            max="200"
+            value={brightness}
+            onChange={(e) => setBrightness(e.target.value)}
+            className="w-full"
+          />
+        </div>
       )}
       
       {error && <p className="text-red-500 mb-2">{error}</p>}
