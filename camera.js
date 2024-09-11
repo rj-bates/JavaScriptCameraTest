@@ -64,7 +64,8 @@ async function initCamera() {
         }
 
         // Initialize gRPC-Web client
-        const client = new flashcontrol.FlashControlClient('https://localhost:5165', null, null);
+        // Update this line to use the correct namespace
+        const client = new flashcontrol.FlashControl('https://localhost:5165', null, null);
 
         // Add the event listener for native camera capture using gRPC-Web
         document.getElementById('nativeCaptureButton').addEventListener('click', () => {
