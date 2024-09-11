@@ -1,12 +1,13 @@
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
 (function(global, factory) { /* global define, require, module */
-
     /* AMD */ if (typeof define === 'function' && define.amd)
         define(["protobufjs/minimal"], factory);
 
     /* CommonJS */ else if (typeof require === 'function' && typeof module === 'object' && module && module.exports)
         module.exports = factory(require("protobufjs/minimal"));
-
+    /* Global */ else {
+        global.flashcontrol = factory(global.protobuf).flashcontrol;
+    }
 })(this, function($protobuf) {
     "use strict";
 
@@ -1136,10 +1137,10 @@
         return flashcontrol;
     })();
 
+    if (typeof window !== 'undefined') {
+        window.flashcontrol = $root.flashcontrol;
+        console.log('bundle.js: Exposed flashcontrol to window:', window.flashcontrol);
+    }
+    
     return $root;
 });
-
-if (typeof window !== 'undefined') {
-    window.flashcontrol = $root.flashcontrol;
-}
-console.log('bundle.js: Exposed flashcontrol to window:', window.flashcontrol);
