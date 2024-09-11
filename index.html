@@ -4,18 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camera Flash Test</title>
-    
-    <script src="camera.js"></script>
+    <style>
+        #liveVideo, #capturedImage {
+            width: 100%;
+            max-width: 640px;
+            height: auto;
+        }
+        #capturedImage {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Camera Flash Test</h1>
+
+    <div>
+        <video id="liveVideo" autoplay playsinline></video>
+        <img id="capturedImage" alt="Captured photo">
+    </div>
+
     <div>
         <button id="captureButton">Capture Photo with Flash</button>
-        <button id="nativeCaptureButton">Capture Photo with Native Camera</button>
     </div>
-    <video id="video" autoplay style="display: none;"></video>
-    <img id="capturedImage" style="display: none; max-width: 100%;" alt="Captured photo">
-    <img id="nativePhoto" style="display: none; max-width: 100%;" alt="Native camera photo">
+
     <div id="capabilities"></div>
+
+    <script src="camera.js"></script>
 </body>
 </html>

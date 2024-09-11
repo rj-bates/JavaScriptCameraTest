@@ -1,27 +1,23 @@
-
 async function initCamera() {
     try {
-        
         const constraints = {
             video: {
                 width: 1280,
                 height: 720,
-                facingMode: { exact: 'environment' } // Request back-facing camera
+                facingMode: { exact: 'environment' }
             }
         };
 
-        // Request camera permissions and stream
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        const video = document.getElementById('video');
+        const video = document.getElementById('liveVideo');
         video.srcObject = stream;
+        await video.play();
 
         const track = stream.getVideoTracks()[0];
         const capabilitiesDiv = document.getElementById('capabilities');
 
         if ('ImageCapture' in window) {
             const imageCapture = new ImageCapture(track);
-
-            // Check for torch support and get photo capabilities
             const capabilities = track.getCapabilities();
             const photoCapabilities = await imageCapture.getPhotoCapabilities();
 
@@ -34,7 +30,18 @@ async function initCamera() {
 
             document.getElementById('captureButton').addEventListener('click', async () => {
                 try {
-                    const photo = await imageCapture.takePhoto({fillLightMode: 'auto'});
+                    // Try to turn on the flash
+                    if (capabilities.torch) {
+                        await track.applyConstraints({ advanced: [{ torch: true }] });
+                    }
+
+                    const photo = await imageCapture.takePhoto({ fillLightMode: 'flash' });
+                    
+                    // Turn off the flash after capturing
+                    if (capabilities.torch) {
+                        await track.applyConstraints({ advanced: [{ torch: false }] });
+                    }
+
                     const img = document.getElementById('capturedImage');
                     img.src = URL.createObjectURL(photo);
                     img.style.display = 'block';
@@ -44,7 +51,6 @@ async function initCamera() {
                 }
             });
         } else {
-            // Fallback for devices without ImageCapture API support
             capabilitiesDiv.innerHTML = `<strong>Camera Capabilities:</strong><br>
                 Torch Supported: No (ImageCapture API not supported)<br>`;
 
@@ -64,13 +70,6 @@ async function initCamera() {
                 }
             });
         }
-
-       
-        // Add the event listener for native camera capture using gRPC-Web
-        document.getElementById('nativeCaptureButton').addEventListener('click', () => {
-            document.querySelector("#take-photo").click();
-        });
-
     } catch (error) {
         console.error('Error in initCamera:', error);
         alert('Error initializing camera: ' + error.message);
@@ -93,8 +92,4 @@ function formatPhotoCapabilities(capabilities) {
     return result;
 }
 
-// Call initCamera when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded.');
-    initCamera();
-});
+document.addEventListener('DOMContentLoaded', initCamera);
