@@ -1,5 +1,9 @@
+const flashcontrol = window.flashcontrol;
+
 async function initCamera() {
     try {
+        console.log('initCamera function called. flashcontrol object:', flashcontrol);
+        
         const constraints = {
             video: {
                 width: 1280,
@@ -63,10 +67,10 @@ async function initCamera() {
             });
         }
 
-        // Initialize gRPC-Web client
-        console.log('Available flashcontrol objects:', flashcontrol);
-        // Initialize gRPC-Web client
-        console.log('Initializing gRPC-Web client...');
+        console.log('Attempting to initialize gRPC-Web client...');
+        if (typeof flashcontrol === 'undefined' || typeof flashcontrol.FlashControl === 'undefined') {
+            throw new Error('flashcontrol or FlashControl is not defined. Check if bundle.js is loaded correctly and exposes the necessary objects.');
+        }
         const client = new flashcontrol.FlashControl('https://localhost:5165', null, null);
         console.log('gRPC-Web client initialized:', client);
 
@@ -124,6 +128,6 @@ function formatPhotoCapabilities(capabilities) {
 
 // Call initCamera when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded. Calling initCamera...');
+    console.log('DOM fully loaded. flashcontrol object:', flashcontrol);
     initCamera();
 });
