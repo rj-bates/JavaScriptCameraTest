@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camera Flash Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/google-protobuf/3.21.2/google-protobuf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/grpc-web/1.5.0/grpc-web.min.js"></script>
+    <script src="bundle.js"></script>
+    <script src="camera.js"></script>
 </head>
 <body>
     <h1>Camera Flash Test</h1>
@@ -15,13 +19,5 @@
     <img id="capturedImage" style="display: none; max-width: 100%;" alt="Captured photo">
     <img id="nativePhoto" style="display: none; max-width: 100%;" alt="Native camera photo">
     <div id="capabilities"></div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/google-protobuf/3.21.2/google-protobuf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/grpc-web/1.5.0/grpc-web.min.js"></script>
-    <script src="bundle.js"></script>
-    <script>
-        console.log('After bundle.js: flashcontrol object:', window.flashcontrol);
-    </script>
-    <script src="camera.js"></script>
 </body>
 </html>
