@@ -1,3 +1,43 @@
+// public/index.html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WebSocket Photo App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>'
+
+// src/App.js
+import React from 'react';
+import PhotoApp from './PhotoApp';
+
+function App() {
+  return (
+    <div>
+      <PhotoApp />
+    </div>
+  );
+}
+
+export default App;
+
+// src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+    <React.StrictMode>
+    <App />
+    </React.StrictMode>
+)
+
+// src/PhotoApp.js
 import React, { useState, useEffect, useCallback } from 'react';
 
 const PhotoApp = () => {
@@ -75,16 +115,6 @@ const PhotoApp = () => {
     }
   };
 
-  const capturePhotoNative = () => {
-    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-      webSocket.send(JSON.stringify({ type: 'command', command: 'TakePhotoNative' }));
-      console.log('Sent TakePhotoNative command');
-    } else {
-      setError('WebSocket connection is not open');
-      console.error('WebSocket is not open. ReadyState:', webSocket ? webSocket.readyState : 'undefined');
-    }
-  };
-
   const toggleFlashViaWebSocket = () => {
     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
       const newFlashState = !flashOn;
@@ -139,13 +169,6 @@ const PhotoApp = () => {
         </button>
         
         <button 
-          className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mr-2"
-          onClick={capturePhotoNative}
-        >
-          Capture Photo (Native)
-        </button>
-        
-        <button 
           className={`bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded`}
           onClick={toggleFlashViaWebSocket}
         >
@@ -166,3 +189,4 @@ const PhotoApp = () => {
 };
 
 export default PhotoApp;
+
