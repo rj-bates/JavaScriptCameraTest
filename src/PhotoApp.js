@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 const PhotoApp = () => {
   const [webSocket, setWebSocket] = useState(null);
@@ -6,9 +6,16 @@ const PhotoApp = () => {
   const [error, setError] = useState('');
   const [latestPhoto, setLatestPhoto] = useState(null);
   const [connectionStatus, setConnectionStatus] = useState('Disconnected');
+  const [port, setPort] = useState('5000');
+  const [useSSL, setUseSSL] = useState(false);
 
-  useEffect(() => {
-    const socketUrl = 'wss://localhost:7210/ws'; 
+  const connectWebSocket = useCallback(() => {
+    if (webSocket) {
+      webSocket.close();
+    }
+
+    const protocol = useSSL ? 'wss' : 'ws';
+    const socketUrl = `${protocol}://localhost:${port}/ws`;
     const socket = new WebSocket(socketUrl);
 
     socket.onopen = () => {
@@ -34,13 +41,7 @@ const PhotoApp = () => {
     };
 
     setWebSocket(socket);
-
-    return () => {
-      if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.close();
-      }
-    };
-  }, []);
+  }, [port, useSSL]);
 
   const handleServerMessage = (message) => {
     try {
@@ -66,9 +67,8 @@ const PhotoApp = () => {
 
   const capturePhotoViaWebSocket = () => {
     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-      const message = JSON.stringify({ type: 'command', command: 'TakePhoto' });
-      webSocket.send(message);
-      console.log('Sent message:', message);
+      webSocket.send(JSON.stringify({ type: 'command', command: 'TakePhoto' }));
+      console.log('Sent TakePhoto command');
     } else {
       setError('WebSocket connection is not open');
       console.error('WebSocket is not open. ReadyState:', webSocket ? webSocket.readyState : 'undefined');
@@ -79,9 +79,8 @@ const PhotoApp = () => {
     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
       const newFlashState = !flashOn;
       const command = newFlashState ? 'FlashOn' : 'FlashOff';
-      const message = JSON.stringify({type: 'command', command: command});
-      webSocket.send(message);
-      console.log('Sent message:', message);
+      webSocket.send(JSON.stringify({ type: 'command', command }));
+      console.log(`Sent ${command} command`);
     } else {
       setError('WebSocket connection is not open');
       console.error('WebSocket is not open. ReadyState:', webSocket ? webSocket.readyState : 'undefined');
@@ -91,6 +90,31 @@ const PhotoApp = () => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Web Camera App</h1>
+      
+      <div className="mb-4">
+        <input
+          type="text"
+          value={port}
+          onChange={(e) => setPort(e.target.value)}
+          placeholder="Port number"
+          className="border p-2 mr-2"
+        />
+        <label className="mr-2">
+          <input
+            type="checkbox"
+            checked={useSSL}
+            onChange={(e) => setUseSSL(e.target.checked)}
+            className="mr-1"
+          />
+          Use SSL
+        </label>
+        <button 
+          onClick={connectWebSocket}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Connect
+        </button>
+      </div>
       
       <div className="mb-4">
         <p>Connection Status: {connectionStatus}</p>
@@ -105,10 +129,10 @@ const PhotoApp = () => {
         </button>
         
         <button 
-          className={`bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded ${flashOn ? 'opacity-50' : ''}`}
+          className={`bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded`}
           onClick={toggleFlashViaWebSocket}
         >
-          {flashOn ? 'Turn Flash Off' : 'Turn Flash On'}
+          Turn Flash {flashOn ? 'Off' : 'On'}
         </button>
       </div>
       
