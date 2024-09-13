@@ -66,8 +66,9 @@ const PhotoApp = () => {
 
   const capturePhotoViaWebSocket = () => {
     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-      webSocket.send(JSON.stringify({ command: 'TakePhoto' }));
-      console.log('Sent TakePhoto command');
+      const message = JSON.stringify({ type: 'command', command: 'TakePhoto' });
+      webSocket.send(message);
+      console.log('Sent message:', message);
     } else {
       setError('WebSocket connection is not open');
       console.error('WebSocket is not open. ReadyState:', webSocket ? webSocket.readyState : 'undefined');
@@ -78,8 +79,9 @@ const PhotoApp = () => {
     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
       const newFlashState = !flashOn;
       const command = newFlashState ? 'FlashOn' : 'FlashOff';
-      webSocket.send(JSON.stringify({ command }));
-      console.log(`Sent ${command} command`);
+      const message = JSON.stringify({type: 'command', command: command});
+      webSocket.send(message);
+      console.log('Sent message:', message);
     } else {
       setError('WebSocket connection is not open');
       console.error('WebSocket is not open. ReadyState:', webSocket ? webSocket.readyState : 'undefined');
