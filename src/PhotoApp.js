@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 const PhotoApp = () => {
+  const [webSocket, setWebSocket] = useState(null);
   const [hasFlash, setHasFlash] = useState(false);
   const [flashOn, setFlashOn] = useState(false);
   const [error, setError] = useState('');
@@ -9,63 +10,48 @@ const PhotoApp = () => {
   const canvasRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
 
+  // Initialize WebSocket connection when the component mounts
   useEffect(() => {
-    async function setupCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { 
-            facingMode: 'environment',
-            advanced: [{ torch: true }]  // Request torch capability
-          } 
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-        
-        const track = stream.getVideoTracks()[0];
-        const capabilities = track.getCapabilities();
-        const settings = track.getSettings();
+    const socket = new WebSocket('ws://localhost:7210/ws'); // Change this URL to your WebSocket server's address
+    socket.onopen = () => {
+      console.log('WebSocket connection established');
+    };
 
-        // Check if torch is supported and currently available
-        setHasFlash('torch' in capabilities && 'torch' in settings);
+    socket.onmessage = (event) => {
+      console.log('Received from server: ', event.data);
+      // Here, you could handle any incoming messages (e.g., a photo path)
+    };
 
-        // If ImageCapture API is available, use it for more accurate flash detection
-        if ('ImageCapture' in window) {
-          const imageCapture = new ImageCapture(track);
-          const photoCapabilities = await imageCapture.getPhotoCapabilities();
-          setHasFlash(photoCapabilities.fillLightMode.includes('flash'));
-        }
-      } catch (err) {
-        setError('Failed to access camera: ' + err.message);
+    socket.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+
+    setWebSocket(socket);
+
+    // Cleanup WebSocket on component unmount
+    return () => {
+      if (socket) {
+        socket.close();
       }
-    }
-    setupCamera();
+    };
   }, []);
 
-  const toggleFlash = async () => {
-    if (!hasFlash) return;
-    
-    const stream = videoRef.current.srcObject;
-    const track = stream.getVideoTracks()[0];
-    const newFlashState = !flashOn;
-    
-    try {
-      await track.applyConstraints({
-        advanced: [{ torch: newFlashState }]
-      });
-      setFlashOn(newFlashState);
-    } catch (err) {
-      setError('Failed to toggle flash: ' + err.message);
+  const capturePhotoViaWebSocket = () => {
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+      webSocket.send('TakePhoto'); // Send message to take a photo via WebSocket
+    } else {
+      setError('WebSocket connection is not open');
     }
   };
 
-  const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const context = canvasRef.current.getContext('2d');
-      context.filter = `brightness(${brightness}%)`;
-      context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-      const imageDataUrl = canvasRef.current.toDataURL('image/jpeg');
-      setCapturedImage(imageDataUrl);
+  const toggleFlashViaWebSocket = () => {
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+      const newFlashState = !flashOn;
+      const flashMessage = newFlashState ? 'FlashOn' : 'FlashOff';
+      webSocket.send(flashMessage); // Send flash toggle message via WebSocket
+      setFlashOn(newFlashState); // Update the local flash state
+    } else {
+      setError('WebSocket connection is not open');
     }
   };
 
@@ -80,50 +66,20 @@ const PhotoApp = () => {
       <div className="mb-4">
         <button 
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-          onClick={capturePhoto}
+          onClick={capturePhotoViaWebSocket}
         >
-          Capture Photo
+          Capture Photo (via WebSocket)
         </button>
         
-        {hasFlash && (
-          <button 
-            className={`bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded ${flashOn ? 'opacity-50' : ''}`}
-            onClick={toggleFlash}
-          >
-            {flashOn ? 'Turn Flash Off' : 'Turn Flash On'}
-          </button>
-        )}
+        <button 
+          className={`bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded ${flashOn ? 'opacity-50' : ''}`}
+          onClick={toggleFlashViaWebSocket}
+        >
+          {flashOn ? 'Turn Flash Off (via WebSocket)' : 'Turn Flash On (via WebSocket)'}
+        </button>
       </div>
       
-      {!hasFlash && (
-        <div className="mb-4">
-          <p className="text-yellow-600 mb-2">Note: Flash control is not available on this device.</p>
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="brightness">
-            Brightness Adjustment:
-          </label>
-          <input
-            type="range"
-            id="brightness"
-            name="brightness"
-            min="0"
-            max="200"
-            value={brightness}
-            onChange={(e) => setBrightness(e.target.value)}
-            className="w-full"
-          />
-        </div>
-      )}
-      
       {error && <p className="text-red-500 mb-2">{error}</p>}
-      
-      {capturedImage && (
-        <div className="mt-4">
-          <h2 className="text-xl font-bold mb-2">Captured Photo:</h2>
-          <img src={capturedImage} alt="Captured" style={{ maxWidth: '100%', width: '500px' }} />
-        </div>
-      )}
-      
-      <canvas ref={canvasRef} style={{ display: 'none' }} width={1280} height={720} />
     </div>
   );
 };
