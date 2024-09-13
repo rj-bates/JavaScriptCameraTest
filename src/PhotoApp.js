@@ -8,7 +8,7 @@ const PhotoApp = () => {
   const [connectionStatus, setConnectionStatus] = useState('Disconnected');
 
   useEffect(() => {
-    const socketUrl = 'ws://localhost:5000/ws'; // Update this URL to match your server's address and port
+    const socketUrl = 'wss://localhost:7210/ws'; 
     const socket = new WebSocket(socketUrl);
 
     socket.onopen = () => {
