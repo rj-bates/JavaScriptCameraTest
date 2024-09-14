@@ -8,6 +8,7 @@ const PhotoApp = () => {
   const [connectionStatus, setConnectionStatus] = useState('Disconnected');
   const [port, setPort] = useState('5000');
   const [useSSL, setUseSSL] = useState(false);
+  
 
   const connectWebSocket = useCallback(() => {
     if (webSocket) {
@@ -48,7 +49,10 @@ const PhotoApp = () => {
       const data = JSON.parse(message);
       switch (data.type) {
         case 'photo':
-          setLatestPhoto(data.filePath);
+          setLatestPhoto({
+            filePath: data.filePath,
+            imageData: `data:image/jpeg;base64,${data.imageData}`
+          });
           break;
         case 'flash':
           setFlashOn(data.status === 'on');
@@ -158,7 +162,8 @@ const PhotoApp = () => {
       {latestPhoto && (
         <div className="mt-4">
           <h2 className="text-xl font-bold mb-2">Latest Captured Photo:</h2>
-          <img src={`file://${latestPhoto}`} alt="Captured" className="max-w-full h-auto" />
+          <img src={latestPhoto.imageData} alt="Captured" className="max-w-full h-auto" />
+          <p>File path: {latestPhoto.filePath}</p>
         </div>
       )}
     </div>
