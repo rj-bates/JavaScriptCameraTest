@@ -8,7 +8,8 @@ const PhotoApp = () => {
   const [connectionStatus, setConnectionStatus] = useState('Disconnected');
   const [port, setPort] = useState('5000');
   const [useSSL, setUseSSL] = useState(false);
-  
+  const [isCapturingNative, setIsCapturingNative] = useState(false);
+
 
   const connectWebSocket = useCallback(() => {
     if (webSocket) {
@@ -53,12 +54,14 @@ const PhotoApp = () => {
             filePath: data.filePath,
             imageData: `data:image/jpeg;base64,${data.imageData}`
           });
+          setIsCapturingNative(false);
           break;
         case 'flash':
           setFlashOn(data.status === 'on');
           break;
         case 'error':
           setError(data.message);
+          setIsCapturingNative(false);
           break;
         default:
           console.warn('Unknown message type:', data.type);
@@ -82,6 +85,7 @@ const PhotoApp = () => {
   const capturePhotoNative = () => {
     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
       webSocket.send(JSON.stringify({ type: 'command', command: 'TakePhotoNative' }));
+      setIsCapturingNative(true);
       console.log('Sent TakePhotoNative command');
     } else {
       setError('WebSocket connection is not open');
@@ -145,27 +149,38 @@ const PhotoApp = () => {
         <button 
           className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mr-2"
           onClick={capturePhotoNative}
+          disabled={isCapturingNative}
         >
           Capture Photo (Native)
         </button>
         
-        <button 
+        {/* <button 
           className={`bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded`}
           onClick={toggleFlashViaWebSocket}
         >
           Turn Flash {flashOn ? 'Off' : 'On'}
-        </button>
+        </button> */}
       </div>
       
       {error && <p className="text-red-500 mb-2">{error}</p>}
       
+      {isCapturingNative && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded">
+            <p>Native camera app is open. Please take a photo using the native camera app.</p>
+            <p>This overlay will close automatically when the photo is received.</p>
+          </div>
+        </div>
+      )}
+      
       {latestPhoto && (
         <div className="mt-4">
           <h2 className="text-xl font-bold mb-2">Latest Captured Photo:</h2>
-          <img src={latestPhoto.imageData} alt="Captured" className="max-w-full h-auto" />
-          <p>File path: {latestPhoto.filePath}</p>
-        </div>
-      )}
+          {latestPhoto.imageData ? (
+            <img src={latestPhoto.imageData} alt="Captured" className="max-w-full h-auto" />
+          ) : (
+            <p>Photo captured and saved at: {latestPhoto.filePath}</p>
+          )}
     </div>
   );
 };
